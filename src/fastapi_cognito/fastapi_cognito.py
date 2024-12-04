@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 from starlette.requests import Request
 
 from .cognito_jwt.decode import decode_cognito_jwt
-from .cognito_jwt.exceptions import CognitoJWTException
+from .cognito_jwt.exceptions import CognitoJWTException, ExpiredJWTException
 from .exceptions import CognitoAuthError
 from .models import UserpoolModel, CognitoToken
 
@@ -211,6 +211,11 @@ class CognitoAuth(object):
             raise HTTPException(
                 status_code=401,
                 detail="Malformed authentication token"
+            )
+        except ExpiredJWTException:
+            raise HTTPException(
+                status_code=403,
+                detail="Token is expired."
             )
         except Exception as error:
             raise HTTPException(

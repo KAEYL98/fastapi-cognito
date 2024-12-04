@@ -4,7 +4,7 @@ import json
 import time
 from typing import Union, Container, Dict, Mapping
 
-from fastapi_cognito.cognito_jwt.exceptions import CognitoJWTException
+from fastapi_cognito.cognito_jwt.exceptions import CognitoJWTException, ExpiredJWTException
 
 CLIENT_ID_KEYS: Dict[str, str] = {
     'access': 'client_id',
@@ -17,7 +17,7 @@ def check_expired(exp: int, testmode: bool = False) -> None:
     Check if JWT token is expired if test mode is not enabled.
     """
     if time.time() > exp and not testmode:
-        raise CognitoJWTException("Token is expired.")
+        raise ExpiredJWTException("Token is expired.")
 
 
 def check_client_id(
