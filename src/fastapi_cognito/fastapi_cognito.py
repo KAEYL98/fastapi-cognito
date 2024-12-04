@@ -143,6 +143,19 @@ class CognitoAuth(object):
             )
 
         header_parts = auth_header_value.split()
+        if self._jwt_header_prefix == "":
+            if len(header_parts) == 0:
+                raise HTTPException(
+                    status_code=401,
+                    detail="Invalid Cognito JWT Header - Missing token"
+                )
+            elif len(header_parts) > 1:
+                raise HTTPException(
+                    status_code=401,
+                    detail="Invalid Cognito JWT Header - Token contains spaces"
+                )
+            return header_parts[0]
+
         if self._jwt_header_prefix not in header_parts:
             raise HTTPException(
                 status_code=401,
